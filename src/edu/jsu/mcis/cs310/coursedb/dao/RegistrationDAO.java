@@ -9,6 +9,10 @@ import java.sql.Statement;
 public class RegistrationDAO {
     
     private final DAOFactory daoFactory;
+    private final static String QUERY_CREATE = "INSERT INTO registration (studentid, termid, crn) VALUES (?, ?, ?)";     
+    private final static String QUERY_DELETE = "DELETE FROM registration WHERE (studentid = ?) AND (termid) = ? AND (crn = ?)";
+    private final static String QUERY_DELETE_TERM = "DELETE FROM registration WHERE (studentid = ?) AND (termid = ?)";
+    private final static String QUERY_LIST = "SELECT * FROM registration WHERE (studentid = ?) AND (termid = ?)";
     
     RegistrationDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
@@ -26,6 +30,12 @@ public class RegistrationDAO {
             Connection conn = daoFactory.getConnection();
             
             if (conn.isValid(0)) {
+                ps = conn.prepareStatement(QUERY_CREATE);
+                ps.setInt(1, studentid);    
+                ps.setInt(2, termid);
+                ps.setInt(3, crn);
+                
+                result=ps.executeUpdate()>0;
                 
                 // INSERT YOUR CODE HERE
                 
@@ -57,6 +67,15 @@ public class RegistrationDAO {
             Connection conn = daoFactory.getConnection();
             
             if (conn.isValid(0)) {
+                ps = conn.prepareStatement(QUERY_DELETE);
+
+               
+                //Parameters for the SQL statement
+                ps.setInt(1, studentid);
+                ps.setInt(2, termid);
+                ps.setInt(3, crn);
+                
+                result = ps.executeUpdate() > 0;
                 
                 // INSERT YOUR CODE HERE
                 
@@ -87,7 +106,11 @@ public class RegistrationDAO {
             Connection conn = daoFactory.getConnection();
             
             if (conn.isValid(0)) {
-                
+                ps = conn.prepareStatement(QUERY_DELETE_TERM);
+               
+                ps.setInt(1, studentid);
+                ps.setInt(2, termid);
+                result=ps.executeUpdate()>0;
                 // INSERT YOUR CODE HERE
                 
             }
@@ -119,7 +142,14 @@ public class RegistrationDAO {
             Connection conn = daoFactory.getConnection();
             
             if (conn.isValid(0)) {
+                ps = conn.prepareStatement(QUERY_LIST);
+            
+                ps.setInt(1, studentid);
+                ps.setInt(2, termid);
+                rs = ps.executeQuery();
+                result = DAOUtility.getResultSetAsJson(rs);
                 
+               
                 // INSERT YOUR CODE HERE
                 
             }
